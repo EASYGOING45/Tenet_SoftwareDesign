@@ -1,11 +1,9 @@
 from django.db import models
 
 # Create your models here.
-""" Model层 设置各个数据表 """
-
 # 用户信息表
 class User(models.Model):
-    username = models.CharField(max_length=2-,primary_key=True,verbose_name='用户名')
+    username = models.CharField(max_length=20,primary_key=True,verbose_name='用户名')
     password = models.CharField(max_length=32,verbose_name='密码')
     email=models.CharField(max_length=30,verbose_name='邮箱',null=True)  # null=True表示可以为空
     status_type = ((0,u'正常'),(1,u'禁用'))  # u表示unicode编码
