@@ -33,7 +33,7 @@ def opera(request):
                 response['msg'] = '请求类型有误'
         else:
             response['code'] = '-3'
-            response['msg'] = '确少必要参数'
+            response['msg'] = '缺少必要参数'
     else:
         response['code']='-1'
         response['msg']='请求方式有误'
@@ -82,7 +82,7 @@ def getInfo(info,request):
                 response['msg'] = '问卷尚未发布'
     else:
         response['code'] = '-3'
-        response['msg'] = '确少必要参数'
+        response['msg'] = '缺少必要参数'
     return response
 
 """
@@ -123,7 +123,7 @@ def getTempInfo(info,request):
             response['detail'] = detail
     else:
         response['code'] = '-3'
-        response['msg'] = '确少必要参数'
+        response['msg'] = '缺少必要参数'
     return response
 
 
@@ -219,6 +219,6 @@ def submitWj(info,request):
                 )
     else:
         response['code'] = '-3'
-        response['msg'] = '确少必要参数'
+        response['msg'] = '缺少必要参数'
 
     return response
