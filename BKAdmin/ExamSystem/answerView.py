@@ -84,3 +84,44 @@ def getInfo(info,request):
         response['code'] = '-3'
         response['msg'] = '确少必要参数'
     return response
+
+"""
+获取模板问卷信息
+"""
+def getTempInfo(info,request):
+    response = {'code': 0, 'msg': 'success'}
+    wjId=info.get('wjId')
+    username = request.session.get('username')
+    if wjId:
+        try:#判断问卷id是否存在
+            res=TempWj.objects.get(id=wjId)#查询id为wjId
+            response['title']=res.title
+            response['desc']='问卷描述'
+        except:
+            response['code'] = '-10'
+            response['msg'] = '模板不存在'
+        else:
+            obj = TempQuestion.objects.filter(wjId=wjId)
+            detail = []
+            for item in obj:
+                temp = {}
+                temp['title'] = item.title
+                temp['type'] = item.type
+                temp['id'] = item.id  # 问题id
+                temp['row'] = item.row
+                temp['must'] = item.must
+                # 获取选项
+                temp['options'] = []
+                if temp['type'] in ['radio', 'checkbox']:  # 如果是单选或者多选
+                    optionItems = TempOptions.objects.filter(questionId=item.id)
+                    for optionItem in optionItems:
+                        temp['options'].append({'title':optionItem.title,'id':optionItem.id})
+                temp['radioValue'] = -1  # 接收单选框的值
+                temp['checkboxValue'] = []  # 接收多选框的值
+                temp['textValue'] = ''  # 接收输入框的值
+                detail.append(temp)
+            response['detail'] = detail
+    else:
+        response['code'] = '-3'
+        response['msg'] = '确少必要参数'
+    return response
