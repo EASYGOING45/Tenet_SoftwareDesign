@@ -124,3 +124,75 @@ def addWj(info,username):
         response['code'] = '-3'
         response['msg'] = '确少必要参数'
     return response
+
+"""
+获取问卷列表
+"""
+def getWjList(info,username):
+    response = {'code': 0, 'msg': 'success'}
+    if username:
+        obj = Wj.objects.filter(username=username).order_by('-id')
+        detail=[]
+        for item in obj:
+            temp={}
+            temp['id']=item.id
+            temp['title']=item.title
+            temp['desc']=item.desc
+            temp['status']=item.status
+            detail.append(temp)
+        response['data']={'detail':detail}
+
+    else:
+        response['code'] = '-3'
+        response['msg'] = '确少必要参数'
+    return response
+
+"""
+获取模板库问卷列表
+"""
+def getTempWjList(info,username):
+    response = {'code': 0, 'msg': 'success'}
+    page = info.get('page',1)  # 问卷标题
+    if username:
+        obj = TempWj.objects.all().order_by('id')
+        count=obj.count()
+        obj=obj[(page - 1) * 5: (page - 1) * 5 + 5]
+        detail=[]
+        for item in obj:
+            temp={}
+            temp['tempid']=item.id
+            temp['tempname']=item.title
+            temp['username'] = item.username
+            # temp['desc']=item.desc
+            detail.append(temp)
+        response['detail']=detail
+        response['count']=count
+
+    else:
+        response['code'] = '-3'
+        response['msg'] = '确少必要参数'
+    return response
+
+"""
+删除问卷
+"""
+def deleteWj(info,username):
+    response = {'code': 0, 'msg': 'success'}
+    id = info.get('id')#问卷id
+    if username and id:
+        try:
+            Wj.objects.filter(username=username, id=id).delete()#删除问卷
+            obj=Question.objects.filter(wjId=id)#查询所有关联问题
+            for item in obj:
+                Options.objects.filter(questionId=item.id).delete()#删除问题关联的选项
+            obj.delete()#删除问卷所有关联问题
+
+            Submit.objects.filter(wjId=id).delete()#删除该问卷的提交信息
+            Answer.objects.filter(wjId=id).delete()#删除该问题的所有回答
+        except:
+            response['code'] = '-4'
+            response['msg'] = '操作失败'
+    else:
+        response['code'] = '-3'
+        response['msg'] = '确少必要参数'
+    return response
