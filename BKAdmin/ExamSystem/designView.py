@@ -338,7 +338,7 @@ def pushWj(info,username):
             response['msg'] = '权限不足'
     else:
         response['code'] = '-3'
-        response['msg'] = '确少必要参数'
+        response['msg'] = '缺少必要参数'
 
     return response
 
@@ -368,7 +368,7 @@ def login(info,request):
                 response['msg'] = '操作失败'
     else:
         response['code'] = '-3'
-        response['msg'] = '确少必要参数'
+        response['msg'] = '缺少必要参数'
     return response
 
 
@@ -409,7 +409,7 @@ def register(info):
             return response
     else:
         response['code'] = '-3'
-        response['msg'] = '确少必要参数'
+        response['msg'] = '缺少必要参数'
     return response
 
 
@@ -436,7 +436,7 @@ def resetpass(info):
                 response['msg'] = '未绑定邮箱'
     else:
         response['code'] = '-3'
-        response['msg'] = '确少必要参数'
+        response['msg'] = '缺少必要参数'
     return response
 
 """
@@ -473,7 +473,7 @@ def dataAnalysis(info):
             response['detail'] = detail
         else:
             response['code'] = '-3'
-            response['msg'] = '确少必要参数'
+            response['msg'] = '缺少必要参数'
     return response
 
 
@@ -594,7 +594,7 @@ def addTemp(info,username):
 
     else:
         response['code'] = '-3'
-        response['msg'] = '确少必要参数'
+        response['msg'] = '缺少必要参数'
 
     return response
 
@@ -638,7 +638,7 @@ def useTemp(info,username):
 
     else:
         response['code'] = '-3'
-        response['msg'] = '确少必要参数'
+        response['msg'] = '缺少必要参数'
 
     return response
 
@@ -651,7 +651,7 @@ def analysisExportExcel(info):
     wjId=info.get('wjId')
     if not wjId:
         response['code'] = '-3'
-        response['msg'] = '确少必要参数'
+        response['msg'] = '缺少必要参数'
         return response
     wj=Wj.objects.get(id=wjId)
     title=wj.title
@@ -676,7 +676,7 @@ def answerText2Excel(info):
     questionId=info.get('questionId')
     if not questionId:
         response['code'] = '-3'
-        response['msg'] = '确少必要参数'
+        response['msg'] = '缺少必要参数'
         return response
     try:
         q = Question.objects.get(id=questionId)
