@@ -438,3 +438,40 @@ def resetpass(info):
         response['code'] = '-3'
         response['msg'] = '确少必要参数'
     return response
+
+"""
+问卷数据分析
+"""
+def dataAnalysis(info):
+    response = {'code': 0, 'msg': 'success'}
+    try:
+        wjId=info.get('wjId')#获取问卷id
+    except:
+        response['code'] = '-4'
+        response['msg'] = '操作失败'
+    else:
+        if wjId:  # 如果问卷id 存在
+            detail = []
+            questions = Question.objects.filter(wjId=wjId)
+            for question in questions:
+                questionTitle = question.title
+                questionType = question.type
+                questionId=question.id
+                if questionType == "radio" or questionType == "checkbox":
+                    result = getQuestionAnalysis(question.id)
+                    print(result)
+                else:
+                    # result = getQuestionText(question.id)
+                    result=''
+
+                detail.append({
+                    "title": questionTitle,
+                    "type": questionType,
+                    "result": result,
+                    "questionId":questionId
+                })
+            response['detail'] = detail
+        else:
+            response['code'] = '-3'
+            response['msg'] = '确少必要参数'
+    return response
