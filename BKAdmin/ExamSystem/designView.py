@@ -475,3 +475,47 @@ def dataAnalysis(info):
             response['code'] = '-3'
             response['msg'] = '确少必要参数'
     return response
+
+
+"""
+根据问题ID获取数据统计情况
+"""
+def getQuestionAnalysis(questionId):
+    # options=Options.objects.filter(questionId=questionId)   #获取问题的选项
+    # answer = Answer.objects.filter(questionId=questionId)  # 获取问题id的答案
+    # total = answer.count()  # 获取答案的总数
+    # result=[]
+    # for option in options:
+    #     optionTitle=option.title#获取问题选项
+    #     optionCount=Answer.objects.filter(questionId=questionId,answer=option.id).count()#获取每个选项数量
+    #     if total==0:
+    #         percent=0
+    #     else:
+    #         percent=int((optionCount/total)*10000)/100#获取每个选项的占比
+    #     result.append({
+    #         "option":optionTitle,
+    #         "count":optionCount,
+    #         "percent":str(percent)+'%'
+    #     })
+    # return result
+
+    result=[]
+    cursor=connection.cursor()
+    cursor.execute('select A.id,count(B.submitId),A.title from (select * from myAdmin_options where questionId=%s) A left join myAdmin_answer B on A.id=B.answer group by A.id'%questionId)
+    rows=cursor.fetchall()
+    total=0
+    for id,count,title in rows:
+        total+=count
+    for id,count,title in rows:
+        if total==0:
+            percent=0
+        else:
+            percent=int((count/total)*10000)/100
+        result.append({
+            'option':title,
+            'count':count,
+            'percent':str(percent)+'%'
+        })
+    print('questionId=',questionId)
+    print('result=',result)
+    return result
