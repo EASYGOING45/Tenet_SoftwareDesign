@@ -69,7 +69,7 @@ def opera(request):  # 问卷设计者操作主入口
                         response['msg'] = '请求类型有误'
             else:
                 response['code'] = '-3'
-                response['msg'] = '确少必要参数'
+                response['msg'] = '缺少必要参数'
     else:
         response['code']='-1'
         response['msg']='请求方式有误'
@@ -122,7 +122,7 @@ def addWj(info,username):
                 response['msg'] = '操作失败'
     else:
         response['code'] = '-3'
-        response['msg'] = '确少必要参数'
+        response['msg'] = '缺少必要参数'
     return response
 
 """
@@ -144,7 +144,7 @@ def getWjList(info,username):
 
     else:
         response['code'] = '-3'
-        response['msg'] = '确少必要参数'
+        response['msg'] = '缺少必要参数'
     return response
 
 """
@@ -170,7 +170,7 @@ def getTempWjList(info,username):
 
     else:
         response['code'] = '-3'
-        response['msg'] = '确少必要参数'
+        response['msg'] = '缺少必要参数'
     return response
 
 """
@@ -194,7 +194,7 @@ def deleteWj(info,username):
             response['msg'] = '操作失败'
     else:
         response['code'] = '-3'
-        response['msg'] = '确少必要参数'
+        response['msg'] = '缺少必要参数'
     return response
 
 
@@ -233,7 +233,7 @@ def getQuestionList(info,username):
 
     else:
         response['code'] = '-3'
-        response['msg'] = '确少必要参数'
+        response['msg'] = '缺少必要参数'
     return response
 
 
@@ -293,7 +293,7 @@ def addQuestion(info,username):
             return response
     else:
         response['code'] = '-3'
-        response['msg'] = '确少必要参数'
+        response['msg'] = '缺少必要参数'
     return response
 
 """
@@ -316,6 +316,97 @@ def deleteQuestion(info,username):
         except:
             response['code'] = '-4'
             response['msg'] = '操作失败'
+    else:
+        response['code'] = '-3'
+        response['msg'] = '缺少必要参数'
+    return response
+
+"""
+发布问卷
+"""
+def pushWj(info,username):
+    response = {'code': 0, 'msg': 'success'}
+    wjId=info.get('wjId')
+    status=info.get('status')#0暂停问卷 1发布问卷
+    print('%s,%s,%s'%(wjId,username,status))
+    if wjId and username and (status==0 or status==1):
+        res=Wj.objects.filter(id=wjId,username=username)
+        if res.exists():  # 该题目是此用户创建的 有权限
+            res.update(status=status)
+        else:  # 该题目不是此用户创建的 无权限
+            response['code'] = '-6'
+            response['msg'] = '权限不足'
+    else:
+        response['code'] = '-3'
+        response['msg'] = '确少必要参数'
+
+    return response
+
+"""
+登录
+"""
+def login(info,request):
+    response = {'code': 0, 'msg': 'success'}
+    username = info.get('username')  #用户名
+    password = info.get('password')  #密码
+    if username and password:
+        try:
+            # 根据前台传回的用户名查找密码和用户状态
+            # 若查询失败，抛出异常错误
+            # 若查询成功，判断密码是否正确和用户状态是否正常
+            t_password = User.objects.get(username=username).password
+            t_status = User.objects.get(username=username).status
+        except:
+            response['code'] = '-5'
+            response['msg'] = '不存在该用户'
+        else:
+            if password==t_password and 0==t_status:
+                request.session["username"]= username
+                return response
+            else:
+                response['code'] = '-4'
+                response['msg'] = '操作失败'
+    else:
+        response['code'] = '-3'
+        response['msg'] = '确少必要参数'
+    return response
+
+
+"""
+登出
+"""
+def exit(request):
+    response = {'code': 0, 'msg': 'success'}
+    # 对django_session中的用户名执行删除操作
+    # 若删除成功，返回成功信息
+    # 若删除失败，抛出异常操作失败
+    try:
+        del request.session['username']
+    except:
+        response['code'] = '-4'
+        response['msg'] = '操作失败'
+    else:
+        return response
+    return response
+
+"""
+注册
+"""
+def register(info):
+    response = {'code': 0, 'msg': 'success'}
+    t_username = info.get('username') #用户名
+    t_password = info.get('password') #密码
+    if t_username and t_password:  #用户名和密码不为空时，执行操作
+        #将用户名和密码，以及初始状态status=0插入数据库中
+        #若插入失败，抛出异常操作失败
+        #若插入成功，返回成功信息
+        try:
+            User.objects.create(username=t_username,password=t_password)
+        except:
+            response['code'] = '-4'
+            response['msg'] = '操作失败'
+        else:
+            return response
     else:
         response['code'] = '-3'
         response['msg'] = '确少必要参数'
