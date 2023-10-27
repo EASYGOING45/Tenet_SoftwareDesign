@@ -91,3 +91,36 @@ def loginCheck(request):
             response['code']='404'
             response['msg']='未登录'
     return response
+
+
+"""
+添加问卷/更新问卷
+当传入id(问卷的id)为空时->添加问卷  不为空时->更新问卷
+"""
+def addWj(info,username):
+    response = {'code':0,'msg':'success'}
+    title = info.get('title') # 问卷标题
+    desc = info.get('desc') # 问卷描述
+    id = info.get('id') # 问卷id 可为空
+    if username and title:
+        try:
+            if id:#id不为空 更新问卷
+                res=Wj.objects.get(username=username,id=id)
+                res.title=title
+                res.desc=desc
+                res.save()
+            else:#否则 添加问卷
+                res = Wj.objects.create(username=username, title=title,desc=desc, status=0)
+        except:
+            response['code'] = '-4'
+            response['msg'] = '操作失败'
+        else:
+            if res.id > 0:
+                response['id'] = res.id
+            else:
+                response['code'] = '-4'
+                response['msg'] = '操作失败'
+    else:
+        response['code'] = '-3'
+        response['msg'] = '确少必要参数'
+    return response
