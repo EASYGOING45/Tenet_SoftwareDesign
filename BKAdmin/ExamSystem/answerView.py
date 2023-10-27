@@ -125,3 +125,100 @@ def getTempInfo(info,request):
         response['code'] = '-3'
         response['msg'] = '确少必要参数'
     return response
+
+
+"""
+提交问卷
+"""
+@transaction.atomic
+def submitWj(info,request):
+    response = {'code': 0, 'msg': 'success'}
+    wjId = info.get('wjId')
+    useTime=info.get('useTime')
+    detail=info.get('detail')
+    if 'HTTP_X_FORWARDED_FOR' in request.META:
+        ip = request.META.get('HTTP_X_FORWARDED_FOR')
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+
+    s1 = transaction.savepoint()#设置事务保存点 回滚使用
+    if wjId:
+
+        try:  # 判断问卷id是否存在
+            res = Wj.objects.get(id=wjId)  # 查询id为wjId
+            response['title'] = res.title
+            response['desc'] = res.desc
+        except:
+            response['code'] = '-10'
+            response['msg'] = '问卷不存在'
+            return response
+        if res.status==0:#当问卷状态为1(已发布)时才可回答
+            response['code'] = '-10'
+            response['msg'] = '问卷尚未发布'
+            return response
+
+        #记录提交信息
+        submitInfo=Submit.objects.create(
+            wjId=wjId,
+            submitTime=datetime.datetime.now(),
+            submitIp=ip,
+            useTime=useTime
+        )
+        qItems=Question.objects.filter(wjId=wjId,must=True)#查询所有必填题目
+        musts=[]
+        for qItem in qItems:
+            musts.append(qItem.id)#记录所有必填题目的题目id
+        #记录答案
+        for item in detail:
+            # print(item)
+            if item['type']=='radio':#单选题
+                if item['id'] in musts and item['radioValue']==-1:#此必填选项未填 回滚
+                    print('开始回滚')
+                    transaction.savepoint_rollback(s1)
+                    print('已回滚')
+                    response['code'] = '-11'
+                    response['msg'] = '有必答题目未回答'
+                    break
+                Answer.objects.create(
+                    questionId=item['id'],
+                    submitId=submitInfo.id,
+                    wjId=wjId,
+                    type=item['type'],
+                    answer=item['radioValue']
+                )
+            elif item['type']=='checkbox':#多选题
+                if item['id'] in musts and len(item['checkboxValue'])==0:#此必填选项未填 回滚
+                    print('开始回滚')
+                    transaction.savepoint_rollback(s1)
+                    print('已回滚')
+                    response['code'] = '-11'
+                    response['msg'] = '有必答题目未回答'
+                    break
+                for value in item['checkboxValue']:
+                    Answer.objects.create(
+                        questionId=item['id'],
+                        submitId=submitInfo.id,
+                        wjId=wjId,
+                        type=item['type'],
+                        answer=value
+                    )
+            elif item['type']=='text':#填空题
+                if item['id'] in musts and item['textValue']=='':#此必填选项未填 回滚
+                    print('开始回滚')
+                    transaction.savepoint_rollback(s1)
+                    print('已回滚')
+                    response['code'] = '-11'
+                    response['msg'] = '有必答题目未回答 '
+                    break
+                Answer.objects.create(
+                    questionId=item['id'],
+                    submitId=submitInfo.id,
+                    wjId=wjId,
+                    type=item['type'],
+                    answerText=item['textValue']
+                )
+    else:
+        response['code'] = '-3'
+        response['msg'] = '确少必要参数'
+
+    return response
