@@ -519,3 +519,37 @@ def getQuestionAnalysis(questionId):
     print('questionId=',questionId)
     print('result=',result)
     return result
+
+"""
+获取文本内容
+"""
+def getQuestionText(questionId):
+    answer = Answer.objects.filter(questionId=questionId)# 获取问题id的答案
+    result=[]
+    for item in answer:
+        if(item.answerText):
+            result.append({'context': item.answerText})
+    return result
+
+"""
+获取文本回答详情
+"""
+def getTextAnswerDetail(info):
+    response = {'code': 0, 'msg': 'success'}
+    questionId=info.get('questionId')
+    pageSize=info.get('pageSize',10)
+    currentPage=info.get('currentPage',1)
+    if not questionId:
+        response['code'] = '-4'
+        response['msg'] = '操作失败'
+        return response
+    answer=Answer.objects.filter(~Q(answerText=''),questionId=questionId,answerText__isnull=False)
+    total=answer.count()
+    answer=answer[(currentPage-1)*pageSize:currentPage*pageSize]
+    result = []
+    for item in answer:
+
+        result.append({'context': item.answerText})
+    response['detail']=result
+    response['total']=total
+    return response
