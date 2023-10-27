@@ -553,3 +553,91 @@ def getTextAnswerDetail(info):
     response['detail']=result
     response['total']=total
     return response
+
+
+"""
+添加模板(临时)  根据wjId,将现有的问卷添加到模板库中
+"""
+def addTemp(info,username):
+    response = {'code': 0, 'msg': 'success'}
+    wjId=info.get('wjId')
+    if wjId:
+        try:
+            wjItem=Wj.objects.get(id=wjId)
+            # 添加问卷信息
+            wjRes=TempWj.objects.create(
+                title=wjItem.title,
+                username=wjItem.username,
+                desc=wjItem.desc
+            )
+            #添加问题信息
+            questions=Question.objects.filter(wjId=wjId)
+            for q in questions:
+                qRes=TempQuestion.objects.create(
+                    title=q.title,
+                    type=q.type,
+                    wjId=wjRes.id,
+                    row=q.row,
+                    must=q.must
+                )
+                #添加选项
+                options=Options.objects.filter(questionId=q.id)
+                for o in options:
+                    TempOptions.objects.create(
+                        questionId=qRes.id,
+                        title=o.title
+                    )
+
+        except:
+            response['code'] = '-4'
+            response['msg'] = '操作失败'
+
+    else:
+        response['code'] = '-3'
+        response['msg'] = '确少必要参数'
+
+    return response
+
+"""
+使用模板,根据模板wjId,将模板库问卷添加到用户问卷
+"""
+def useTemp(info,username):
+    response = {'code': 0, 'msg': 'success'}
+    wjId=info.get('wjId')
+    if wjId:
+        try:
+            wjItem=TempWj.objects.get(id=wjId)
+            # 添加问卷信息
+            wjRes=Wj.objects.create(
+                title=wjItem.title,
+                username=username,
+                desc=wjItem.desc,
+                status=0
+            )
+            #添加问题信息
+            questions=TempQuestion.objects.filter(wjId=wjId)
+            for q in questions:
+                qRes=Question.objects.create(
+                    title=q.title,
+                    type=q.type,
+                    wjId=wjRes.id,
+                    row=q.row,
+                    must=q.must
+                )
+                #添加选项
+                options=TempOptions.objects.filter(questionId=q.id)
+                for o in options:
+                    Options.objects.create(
+                        questionId=qRes.id,
+                        title=o.title
+                    )
+
+        except:
+            response['code'] = '-4'
+            response['msg'] = '操作失败'
+
+    else:
+        response['code'] = '-3'
+        response['msg'] = '确少必要参数'
+
+    return response
