@@ -641,3 +641,59 @@ def useTemp(info,username):
         response['msg'] = '确少必要参数'
 
     return response
+
+
+"""
+导出excel
+"""
+def analysisExportExcel(info):
+    response = {'code': 0, 'msg': 'success'}
+    wjId=info.get('wjId')
+    if not wjId:
+        response['code'] = '-3'
+        response['msg'] = '确少必要参数'
+        return response
+    wj=Wj.objects.get(id=wjId)
+    title=wj.title
+    data=dataAnalysis(info)
+    if data['code']==0:
+        detail=data['detail']
+        wb=handle.analysisExportExcel(detail,title)
+        bio = BytesIO()
+        wb.save(bio)
+        bio.seek(0)
+        response['filename']='%s.xls'%title
+        response['b64data']=base64.b64encode(bio.getvalue()).decode()
+        return response
+    else:
+        return response
+    
+"""
+回答文本导出excel
+"""
+def answerText2Excel(info):
+    response = {'code': 0, 'msg': 'success'}
+    questionId=info.get('questionId')
+    if not questionId:
+        response['code'] = '-3'
+        response['msg'] = '确少必要参数'
+        return response
+    try:
+        q = Question.objects.get(id=questionId)
+    except:
+        response['code']='-4'
+        response['code']='操作失败'
+        return response
+    else:
+        title=q.title
+    answer = Answer.objects.filter(~Q(answerText=''), questionId=questionId, answerText__isnull=False)
+    data=[]
+    for item in answer:
+        data.append(item.answerText)
+    wb=handle.answerText2Excel(data)
+    bio = BytesIO()
+    wb.save(bio)
+    bio.seek(0)
+    response['filename'] = '%s.xls' % title
+    response['b64data'] = base64.b64encode(bio.getvalue()).decode()
+    return response
