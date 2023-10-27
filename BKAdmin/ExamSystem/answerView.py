@@ -39,3 +39,48 @@ def opera(request):
         response['msg']='请求方式有误'
 
     return HttpResponse(json.dumps(response))
+
+"""
+获取问卷信息
+"""
+def getInfo(info,request):
+    response = {'code': 0, 'msg': 'success'}
+    wjId=info.get('wjId')
+    username = request.session.get('username')
+    if wjId:
+        try:#判断问卷id是否存在
+            res=Wj.objects.get(id=wjId)#查询id为wjId
+            response['title']=res.title
+            response['desc']=res.desc
+        except:
+            response['code'] = '-10'
+            response['msg'] = '问卷不存在'
+        else:
+            if res.username==username or res.status==1:#只有问卷发布者或者此问卷为已发布才能查看
+                obj = Question.objects.filter(wjId=wjId)
+                detail = []
+                for item in obj:
+                    temp = {}
+                    temp['title'] = item.title
+                    temp['type'] = item.type
+                    temp['id'] = item.id  # 问题id
+                    temp['row'] = item.row
+                    temp['must'] = item.must
+                    # 获取选项
+                    temp['options'] = []
+                    if temp['type'] in ['radio', 'checkbox']:  # 如果是单选或者多选
+                        optionItems = Options.objects.filter(questionId=item.id)
+                        for optionItem in optionItems:
+                            temp['options'].append({'title':optionItem.title,'id':optionItem.id})
+                    temp['radioValue'] = -1  # 接收单选框的值
+                    temp['checkboxValue'] = []  # 接收多选框的值
+                    temp['textValue'] = ''  # 接收输入框的值
+                    detail.append(temp)
+                response['detail'] = detail
+            else:
+                response['code'] = '-10'
+                response['msg'] = '问卷尚未发布'
+    else:
+        response['code'] = '-3'
+        response['msg'] = '确少必要参数'
+    return response
