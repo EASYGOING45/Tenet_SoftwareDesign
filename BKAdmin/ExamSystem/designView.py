@@ -411,3 +411,30 @@ def register(info):
         response['code'] = '-3'
         response['msg'] = '确少必要参数'
     return response
+
+
+"""
+重置密码
+"""
+def resetpass(info):
+    response = {'code': 0, 'msg': 'success'}
+    username = info.get('username') #用户名
+    email = info.get('email') #邮箱
+    if username and email:#用户名和邮箱不为空，执行操作
+        #根据用户名查询对应邮箱是否正确
+        #若正确，返回成功信息，若不正确，抛出异常
+        try:
+            t_email = User.objects.get(username=username).email
+        except:
+            response['code'] = '-5'
+            response['msg'] = '不存在该用户'
+        else:
+            if email==t_email:
+                return response
+            else:
+                response['code'] = '-10'
+                response['msg'] = '未绑定邮箱'
+    else:
+        response['code'] = '-3'
+        response['msg'] = '确少必要参数'
+    return response
