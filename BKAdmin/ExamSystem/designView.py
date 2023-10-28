@@ -501,7 +501,7 @@ def getQuestionAnalysis(questionId):
 
     result=[]
     cursor=connection.cursor()
-    cursor.execute('select A.id,count(B.submitId),A.title from (select * from myAdmin_options where questionId=%s) A left join myAdmin_answer B on A.id=B.answer group by A.id'%questionId)
+    cursor.execute('select A.id,count(B.submitId),A.title from (select * from ExamSystem_options where questionId=%s) A left join ExamSystem_answer B on A.id=B.answer group by A.id'%questionId)
     rows=cursor.fetchall()
     total=0
     for id,count,title in rows:

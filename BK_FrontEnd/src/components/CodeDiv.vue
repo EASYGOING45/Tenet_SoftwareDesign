@@ -23,6 +23,7 @@
   margin-top: 40px;
   transform: translate(-50%);
 }
+
 .code-div-head {
   width: 100%;
   height: 40px;
@@ -32,6 +33,7 @@
   padding-left: 15px;
   box-sizing: border-box;
 }
+
 .round {
   width: 12px;
   height: 12px;
@@ -40,8 +42,8 @@
   border-radius: 50%;
   display: inline-block;
 }
+
 .content {
   width: 100%;
   height: calc(100% - 40px);
-}
-</style>
+}</style>

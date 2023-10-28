@@ -48,7 +48,7 @@ class Submit(models.Model):
     
 # 回答表
 class Answer(models.Model):
-    wjId = models.IntegerField(verbose_name='关联问题id')
+    questionId=models.IntegerField(verbose_name='关联问题id')
     submitId = models.IntegerField(verbose_name='关联提交id')
     wjId = models.IntegerField(verbose_name='问卷id')
     type = models.CharField(max_length=20,verbose_name='题目类型')

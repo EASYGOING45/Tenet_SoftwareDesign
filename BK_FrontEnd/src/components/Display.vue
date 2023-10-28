@@ -43,7 +43,7 @@
       <el-button type="primary" style="margin: 5px;" @click="submit" :loading="submitLoading">{{ submitText }}</el-button>
 
       <div class="bottom">
-        <el-link type="info" href="/index">问卷喵&nbsp;提供技术支持</el-link>
+        <el-link type="info" href="/index">BK_刘易行&李欢欢&nbsp;开发编写~</el-link>
       </div>
     </div>
   </div>
@@ -182,4 +182,5 @@ a:visited,
 a:active {
   color: #909399;
   text-decoration: none;
-}</style>
+}
+</style>

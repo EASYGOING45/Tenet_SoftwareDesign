@@ -4,7 +4,7 @@
 -->
 <template>
   <div class="main">
-    <el-carousel height="500px">
+    <el-carousel height="700px" width="500px">
       <el-carousel-item v-for="(item, index) in topImg" :key="index">
         <!--<div style="background-color: black;width: 100%;height: 100%;">-->
         <img :src="item.url" style="width: 100%;height: 100%;" />
@@ -16,16 +16,16 @@
     </el-carousel>
     <!--<el-divider></el-divider>-->
 
-    <code-div><img src="/static/images/demo1.png" class="demoImg"/></code-div>
-    <code-div><img src="/static/images/demo2.png" class="demoImg"/></code-div>
-    <code-div><img src="/static/images/demo3.png" class="demoImg"/></code-div>
+    <code-div><img src="/static/images/demo1.png" class="demoImg" /></code-div>
+    <code-div><img src="/static/images/demo2.png" class="demoImg" /></code-div>
+    <code-div><img src="/static/images/demo3.png" class="demoImg" /></code-div>
     <!-- <img src="/static/images/demo1.png" class="demoImg" /><br /> -->
     <!-- <img src="/static/images/demo2.png" class="demoImg" /><br />
     <img src="/static/images/demo3.png" class="demoImg" /><br /><br /> -->
     <h3>用户须知</h3>
 
     <el-divider></el-divider>
-    <div style="text-align: left;padding-left: 300px;padding-right: 300px;">
+    <!-- <div style="text-align: left;padding-left: 300px;padding-right: 300px;">
       <p>
         为了规范互联网信息服务活动，促进互联网信息服务健康有序发展，让我们共同打造一个绿色、健康的互联网生态环境，以下内容禁止在本平台发布：
       </p>
@@ -48,11 +48,11 @@
         >
       </p>
       <p class="b">(十二)广告类：广告、刷单、借贷名义实行诈骗</p>
-    </div>
+    </div> -->
     <el-footer class="bottom">
-      <p>Copyright © 2019 WjCat. All rights reserved.</p>
-      <p>问卷喵交流群：850804401</p>
-      <p>豫ICP备17008007号-2</p>
+      <p>Copyright © 2023 BK—刘易行&李欢欢. All rights reserved.</p>
+      <p>2020905896 & 2020904302</p>
+      <p>长安大学信息工程学院-软件工程综合设计</p>
     </el-footer>
   </div>
 </template>
@@ -66,20 +66,20 @@ export default {
     return {
       topImg: [
         {
-          title: "免费在线问卷调查系统",
-          subTitle: "Free Online Questionnaire System",
-          url: "/static/images/4.jpg"
-        }
-        //          {
-        //            'title':'简单的打开方式',
-        //            'subTitle':'Simple Opening Method',
-        //            'url':'/static/images/6.jpg'
-        //          },
-        //          {
-        //            'title':'多样的数据可视化',
-        //            'subTitle':'Diversified data visualization',
-        //            'url':'/static/images/11.jpg'
-        //          },
+          title: "基于Django2和Vue2的前后端分离式问卷管理系统",
+          subTitle: "Designed By BK_Tenet & Kylin",
+          url: "/static/images/bg1.jpg"
+        },
+        {
+          'title': '人工智能2020级软件工程综合设计',
+          'subTitle': '刘易行 & 李欢欢',
+          'url': '/static/images/bg2.jpg'
+        },
+        {
+          'title': 'MVC架构设计,前后端分离',
+          'subTitle': 'Github托管 + Docker云原生配置',
+          'url': '/static/images/bg3.jpg'
+        },
       ]
     };
   }
@@ -91,6 +91,7 @@ export default {
   width: 100%;
   height: 100%;
 }
+
 .bottom {
   height: 150px !important;
   background-color: #2e3e4e;
@@ -98,17 +99,20 @@ export default {
   position: relative;
   padding: 20px;
 }
+
 .demoImg {
   width: 100%;
   height: 100%;
   /*border-radius: 5px;*/
 }
+
 .cover {
   position: absolute;
   width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.6);
+  height: 1200px;
+  /* background-color: rgba(0, 0, 0, 0.6); */
   z-index: 100;
+  /*让文字在图片上面*/
   left: 0;
   top: 0;
   color: white;
@@ -116,8 +120,9 @@ export default {
   line-height: 60px;
   padding-top: 180px;
 }
-.lj {
-}
+
+.lj {}
+
 .b {
   font-weight: 700;
 }

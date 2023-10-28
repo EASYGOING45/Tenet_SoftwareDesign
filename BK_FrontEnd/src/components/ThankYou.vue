@@ -8,17 +8,17 @@
       <i class="el-icon-circle-check" style="color: green;font-size: 50px"></i><br>
       您的回答已提交，感谢您的参与！<br><br>
       <el-divider></el-divider>
-      <el-link type="info" href="/index">问卷喵&nbsp;提供技术支持</el-link>
+      <el-link type="info" href="/index">刘易行&李欢欢&nbsp;提供技术支持</el-link>
     </el-card>
   </div>
 </template>
 <style scoped>
-  .thankYou{
-    padding: 40px;
-  }
+.thankYou {
+  padding: 40px;
+}
 </style>
 <style>
-  .el-divider--horizontal{
-    margin: 10px;
-  }
+.el-divider--horizontal {
+  margin: 10px;
+}
 </style>
