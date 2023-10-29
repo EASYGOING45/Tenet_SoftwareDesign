@@ -1,6 +1,6 @@
 name: Django2022
 channels:
-  - defaults
+  - defaults  kml
 dependencies:
   - ca-certificates=2022.07.19=haa95532_0
   - certifi=2022.9.24=py39haa95532_0
